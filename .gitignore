@@ -27,3 +27,7 @@
 hs_err_pid*
 
 /.idea/
+/myFlink.iml
+/target/
+target/classes/log4j2.properties
+target/generated-sources/
