@@ -27,3 +27,9 @@
 hs_err_pid*
 
 /.idea/
+src/main/java/com/myFlink/stream/
+src/main/scala/com/myFlink/table/
+src/test/
+/target/
+target/classes/log4j2.properties
+target/generated-sources/

@@ -10,7 +10,7 @@ import org.apache.flink.util.Collector;
 
 import java.util.Arrays;
 
-public class WorldCount {
+public class WorldCountJava {
 
     private static final String INPUT_KEY = "input";
     private static final String OUTPUT_KEY = "output";
