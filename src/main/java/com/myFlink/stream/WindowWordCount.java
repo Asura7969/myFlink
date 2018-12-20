@@ -35,7 +35,7 @@ public class WindowWordCount {
         @Override
         public void flatMap(String sentence, Collector<Tuple2<String, Integer>> out) throws Exception {
             for (String word: sentence.split(" ")) {
-                out.collect(new Tuple2<String, Integer>(word, 1));
+                out.collect(new Tuple2<>(word, 1));
             }
         }
     }
