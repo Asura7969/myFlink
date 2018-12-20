@@ -24,7 +24,6 @@ import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.util.Collector;
 
 import java.io.File;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -76,13 +75,11 @@ public class HotItems {
                     }
                 });
 
+
         DataStream<UserBehavior> pvData = timedData
-                .filter(new FilterFunction<UserBehavior>() {
-                    @Override
-                    public boolean filter(UserBehavior userBehavior) throws Exception {
-                        // 过滤出只有点击的数据
-                        return userBehavior.behavior.equals("pv");
-                    }
+                .filter(userBehavior -> {
+                    // 过滤出只有点击的数据
+                    return userBehavior.behavior.equals("pv");
                 });
 
         /**
@@ -92,6 +89,15 @@ public class HotItems {
         DataStream<ItemViewCount> windowedData = pvData
                 .keyBy("itemId")
                 .timeWindow(Time.minutes(60),Time.minutes(5))
+                /**
+                 * 增量的聚合操作,它能使用AggregateFunction提前聚合掉数据,减少 state 的存储压力
+                 *
+                 * 第一个参数：CountAgg
+                 *      统计窗口中的条数，遇到一条数据就加一
+                 *
+                 * 第二个参数：WindowResultFunction
+                 *      将每个 key每个窗口聚合后的结果带上其他信息进行输出
+                 */
                 .aggregate(new CountAgg(),new WindowResultFunction());
 
         /**
@@ -135,10 +141,11 @@ public class HotItems {
     public static class WindowResultFunction implements WindowFunction<Long, ItemViewCount, Tuple, TimeWindow> {
 
         @Override
-        public void apply(Tuple key,
-                          TimeWindow window,
-                          Iterable<Long> aggregateResult,
-                          Collector<ItemViewCount> collector) throws Exception {
+        public void apply(Tuple key,// 窗口的主键，即 itemId
+                          TimeWindow window,// 窗口
+                          Iterable<Long> aggregateResult,// 聚合函数的结果，即 count 值
+                          Collector<ItemViewCount> collector // 输出类型为 ItemViewCount
+        ) throws Exception {
             Long itemId = ((Tuple1<Long>) key).f0;
             Long count = aggregateResult.iterator().next();
             collector.collect(ItemViewCount.of(itemId, window.getEnd(), count));
@@ -203,11 +210,8 @@ public class HotItems {
             // 提前清除状态中的数据，释放空间
             itemState.clear();
             // 按照点击量从大到小排序
-            allItems.sort(new Comparator<ItemViewCount>() {
-                @Override
-                public int compare(ItemViewCount o1, ItemViewCount o2) {
-                    return (int) (o2.viewCount - o1.viewCount);
-                }
+            allItems.sort((o1, o2) -> {
+                return (int) (o2.viewCount - o1.viewCount);
             });
             // 将排名信息格式化成 String, 便于打印
             StringBuilder result = new StringBuilder();
