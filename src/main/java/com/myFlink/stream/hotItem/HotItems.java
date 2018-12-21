@@ -195,7 +195,7 @@ public class HotItems {
 
             // 每条数据都保存到状态中
             itemState.add(input);
-            // 注册 windowEnd+1 的 EventTime Timer, 当触发时，说明收齐了属于windowEnd窗口的所有商品数据
+            // 注册 windowEnd + 1 的 EventTime Timer, 当触发时，说明收齐了属于windowEnd窗口的所有商品数据
             context.timerService().registerEventTimeTimer(input.windowEnd + 1);
         }
 
@@ -210,14 +210,12 @@ public class HotItems {
             // 提前清除状态中的数据，释放空间
             itemState.clear();
             // 按照点击量从大到小排序
-            allItems.sort((o1, o2) -> {
-                return (int) (o2.viewCount - o1.viewCount);
-            });
+            allItems.sort((o1, o2) -> (int) (o2.viewCount - o1.viewCount));
             // 将排名信息格式化成 String, 便于打印
             StringBuilder result = new StringBuilder();
             result.append("====================================\n");
-            result.append("时间: ").append(new Timestamp(timestamp-1)).append("\n");
-            for (int i=0;i<topSize;i++) {
+            result.append("时间: ").append(new Timestamp(timestamp - 1)).append("\n");
+            for (int i = 0; i < topSize; i++) {
                 ItemViewCount currentItem = allItems.get(i);
                 // No1:  商品ID=12224  浏览量=2413
                 result.append("No").append(i).append(":")
