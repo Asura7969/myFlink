@@ -2,7 +2,6 @@ package com.myFlink.stream.hotItem;
 
 import com.myFlink.stream.hotItem.pojo.UserBehavior;
 import org.apache.flink.api.common.functions.AggregateFunction;
-import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.common.state.ListState;
 import org.apache.flink.api.common.state.ListStateDescriptor;
 import org.apache.flink.api.java.io.PojoCsvInputFormat;
@@ -27,7 +26,6 @@ import java.io.File;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 /**
