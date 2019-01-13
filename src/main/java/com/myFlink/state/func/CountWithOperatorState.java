@@ -1,4 +1,4 @@
-package com.myFlink.state;
+package com.myFlink.state.func;
 
 import org.apache.flink.api.common.functions.RichFlatMapFunction;
 import org.apache.flink.api.common.state.ListState;
