@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory
 import scala.util.Try
 import scalaj.http.Http
 
-class ConfSource extends SourceFunction[ComputeConf]{
+class ConfSource(confUrl: String) extends SourceFunction[ComputeConf]{
 
   private val LOG = LoggerFactory.getLogger(classOf[ConfSource])
 
@@ -19,7 +19,7 @@ class ConfSource extends SourceFunction[ComputeConf]{
   override def run(sourceContext: SourceContext[ComputeConf]): Unit = {
     implicit val formats = DefaultFormats
     while(true) {
-      Try { Http("confUrl").timeout(2000, 60000).asString }.toOption match {
+      Try { Http(confUrl).timeout(2000, 60000).asString }.toOption match {
         case Some(response) =>
           response.code match {
             case 200 => {

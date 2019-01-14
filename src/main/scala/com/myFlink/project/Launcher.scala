@@ -21,7 +21,6 @@ import org.apache.flink.streaming.connectors.kafka.{FlinkKafkaConsumer010, Flink
 object Launcher {
 
   /**
-    *
     * @param args:
     * 0: bootstrap Servers
     * 1: groupId
