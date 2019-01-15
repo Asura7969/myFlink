@@ -7,6 +7,7 @@ import org.json4s.DefaultFormats
 import org.json4s.native.JsonMethods._
 
 class LogEventDeserializationSchema  extends KeyedDeserializationSchema[LogEvent]{
+
   override def isEndOfStream(t: LogEvent): Boolean = false
 
   override def deserialize(messageKey: Array[Byte], message: Array[Byte], topic: String, partition: Int, offset: Long): LogEvent = {

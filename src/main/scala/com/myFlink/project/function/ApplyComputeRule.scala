@@ -58,7 +58,7 @@ class ApplyComputeRule extends CoFlatMapFunction[LogEvent, ComputeConf, ComputeR
         val meta = mutable.HashMap(
           FIELD_UNIQUE_ID -> key,
           FIELD_DATETIME -> logEvent.dateTime,
-          FIELD_TIMESTAMP -> (logEvent.dateTime.getMillis/60000 *60000).asInstanceOf[AnyRef],
+          FIELD_TIMESTAMP -> (logEvent.dateTime.getMillis / 60000 * 60000).asInstanceOf[AnyRef],
           FIELD_DATASOURCE -> rule.id.toString,
           FIELD_TIMESTAMP_INTERNAL -> logEvent.dateTime.getMillis.asInstanceOf[AnyRef]
 
