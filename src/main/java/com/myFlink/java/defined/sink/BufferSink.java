@@ -18,6 +18,7 @@ import java.util.List;
  */
 public class BufferSink implements SinkFunction<Tuple2<String, Integer>>, CheckpointedFunction {
 
+
     private final int threshold;
     private transient ListState<Tuple2<String, Integer>> checkpointedState;
     private List<Tuple2<String, Integer>> bufferedElements;
