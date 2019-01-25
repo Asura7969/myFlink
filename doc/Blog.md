@@ -1,6 +1,7 @@
 # Akka在Flink中的应用
     https://www.jianshu.com/p/e48d83e39a2f 
     http://wuchong.me/categories/Flink/
+    
 # Flink漫谈
     https://yq.aliyun.com/album/206?spm=a2c4e.11155435.0.0.fa434f7aZ7otkA
  
@@ -12,5 +13,9 @@
 
 # Github
     https://github.com/liguohua-bigdata/simple-flink
+    
 # DataStream API详解
     https://www.jianshu.com/p/a3f43f861a42
+    
+# Flink SQL
+    https://yq.aliyun.com/articles/670202?spm=a2c4e.11153940.blogcont685085.11.45844b31awU7Ax
