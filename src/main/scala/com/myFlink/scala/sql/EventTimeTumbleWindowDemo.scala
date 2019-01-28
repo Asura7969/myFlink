@@ -14,6 +14,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 import org.apache.flink.streaming.api.functions.source.SourceFunction.SourceContext
 import org.apache.flink.streaming.api.watermark.Watermark
+import org.apache.flink.table.api.java.StreamTableEnvironment
 import org.apache.flink.table.api.{TableEnvironment, TableSchema}
 import org.apache.flink.table.sinks.{CsvTableSink, TableSink}
 import org.apache.flink.table.sources.tsextractors.ExistingField
@@ -26,7 +27,7 @@ object SimpleDemo {
   def main(args: Array[String]): Unit = {
     // Streaming 环境
     val env = StreamExecutionEnvironment.getExecutionEnvironment
-    val tEnv = TableEnvironment.getTableEnvironment(env)
+    val tEnv: StreamTableEnvironment = TableEnvironment.getTableEnvironment(env)
 
     // 设置EventTime
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
@@ -57,7 +58,7 @@ object SimpleDemo {
         "  mySource " +
       "GROUP BY TUMBLE(accessTime, INTERVAL '2' MINUTE), region"
 
-    tEnv.sqlQuery(sql).insertInto(sinkTableName);
+    tEnv.sqlQuery(sql).insertInto(sinkTableName)
     env.execute()
   }
 
@@ -67,6 +68,7 @@ object SimpleDemo {
     if (tempFile.exists()) {
       tempFile.delete()
     }
+    // 定义输出路径和表结构
     new CsvTableSink(tempFile.getAbsolutePath).configure(
       Array[String]("region", "winStart", "winEnd", "pv"),
       Array[TypeInformation[_]](Types.STRING, Types.SQL_TIMESTAMP, Types.SQL_TIMESTAMP, Types.LONG))
