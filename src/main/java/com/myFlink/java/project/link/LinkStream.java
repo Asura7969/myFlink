@@ -37,7 +37,7 @@ public class LinkStream {
         env.enableCheckpointing(5000L, CheckpointingMode.EXACTLY_ONCE)
                 .setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
         ExecutionConfig config = env.getConfig();
-        config.setAutoWatermarkInterval(1000L);
+        //config.setAutoWatermarkInterval(1000L);
 
         CheckpointConfig checkpointConfig = env.getCheckpointConfig();
         checkpointConfig.setCheckpointTimeout(8000L);
@@ -58,7 +58,7 @@ public class LinkStream {
         DataStream<TreeMap<String, Node>> reqId = env.addSource(consumer)
                 .map((MapFunction<String, SoaLog>) log -> TransFormSoaLog.lookUp(log))
                 .filter(soa -> filterMsg(soa))
-                .assignTimestampsAndWatermarks(new BoundedOutOfOrdernessTimestampExtractor<SoaLog>(Time.seconds(20)) {
+                .assignTimestampsAndWatermarks(new BoundedOutOfOrdernessTimestampExtractor<SoaLog>(Time.seconds(30)) {
                     @Override
                     public long extractTimestamp(SoaLog element) {
                         return element.getLogTime();
@@ -66,9 +66,8 @@ public class LinkStream {
                 })
                 //.assignTimestampsAndWatermarks(new BoundedLatenessWatermarkAssigner())
                 .keyBy("reqId")
-                // 30秒一个窗口
-                .window(TumblingEventTimeWindows.of(Time.seconds(30)))
-                .allowedLateness(Time.seconds(60))
+                .window(TumblingEventTimeWindows.of(Time.seconds(10)))
+                //.allowedLateness(Time.seconds(60))
                 .aggregate(new AggrMsgByReqId(), new WindowResultFunction());
 
         env.execute("link Stream");
