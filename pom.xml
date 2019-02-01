@@ -96,6 +96,13 @@
       <artifactId>flink-connector-kafka-0.11_2.11</artifactId>
       <version>${flink.version}</version>
     </dependency>
+    <!--flink statebackend-rocksdb-->
+    <dependency>
+      <groupId>org.apache.flink</groupId>
+      <artifactId>flink-statebackend-rocksdb_2.11</artifactId>
+      <version>${flink.version}</version>
+      <!--<scope>test</scope>-->
+    </dependency>
     <!--flink connect-->
     <dependency>
       <groupId>org.apache.flink</groupId>
