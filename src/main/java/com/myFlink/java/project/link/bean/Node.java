@@ -1,5 +1,7 @@
 package com.myFlink.java.project.link.bean;
 
+import java.util.Objects;
+
 public class Node implements Comparable<Node>{
 
     public String rpcId;
@@ -92,5 +94,25 @@ public class Node implements Comparable<Node>{
 
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Node node = (Node) o;
+        return Objects.equals(rpcId, node.rpcId) &&
+                Objects.equals(parentAppId, node.parentAppId) &&
+                Objects.equals(appId, node.appId) &&
+                Objects.equals(iFace, node.iFace) &&
+                Objects.equals(service, node.service) &&
+                Objects.equals(method, node.method) &&
+                Objects.equals(ipAddress, node.ipAddress);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(rpcId, parentAppId, appId, iFace, service, method, ipAddress);
     }
 }

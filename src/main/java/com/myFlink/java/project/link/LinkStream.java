@@ -1,9 +1,11 @@
 package com.myFlink.java.project.link;
 
+import com.myFlink.java.project.link.bean.Link;
 import com.myFlink.java.project.link.bean.Mark;
 import com.myFlink.java.project.link.bean.Node;
 import com.myFlink.java.project.link.bean.SoaLog;
 import com.myFlink.java.project.link.func.AggrMsgByReqId;
+import com.myFlink.java.project.link.func.LinkDetailsFunction;
 import com.myFlink.java.project.link.func.WindowResultFunction;
 import com.myFlink.java.project.link.utils.TransFormSoaLog;
 import org.apache.flink.api.common.ExecutionConfig;
@@ -16,11 +18,13 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.CheckpointConfig;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.AssignerWithPeriodicWatermarks;
+import org.apache.flink.streaming.api.functions.ProcessFunction;
 import org.apache.flink.streaming.api.functions.timestamps.BoundedOutOfOrdernessTimestampExtractor;
 import org.apache.flink.streaming.api.watermark.Watermark;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010;
+import org.apache.flink.util.Collector;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -45,7 +49,7 @@ public class LinkStream {
         checkpointConfig.setMaxConcurrentCheckpoints(2);
         checkpointConfig.setMinPauseBetweenCheckpoints(30000L);
 
-        env.setStateBackend(new RocksDBStateBackend("hdfs_path",true));
+        //env.setStateBackend(new RocksDBStateBackend("hdfs_path",true));
 
         Properties kafkaConf = new Properties();
         kafkaConf.setProperty("bootstrap.servers", "kafka1:9092");
@@ -55,7 +59,7 @@ public class LinkStream {
                 new FlinkKafkaConsumer010<>("soa-info", new SimpleStringSchema(), kafkaConf);
 
         // 一个TreeMap一条链路,有重复数据
-        DataStream<TreeMap<String, Node>> reqId = env.addSource(consumer)
+        env.addSource(consumer)
                 .map((MapFunction<String, SoaLog>) log -> TransFormSoaLog.lookUp(log))
                 .filter(soa -> filterMsg(soa))
                 .assignTimestampsAndWatermarks(new BoundedOutOfOrdernessTimestampExtractor<SoaLog>(Time.seconds(30)) {
@@ -68,7 +72,10 @@ public class LinkStream {
                 .keyBy("reqId")
                 .window(TumblingEventTimeWindows.of(Time.seconds(10)))
                 //.allowedLateness(Time.seconds(60))
-                .aggregate(new AggrMsgByReqId(), new WindowResultFunction());
+                .aggregate(new AggrMsgByReqId(), new WindowResultFunction())
+                .keyBy("windowEnd")
+                .process(new LinkDetailsFunction())
+                .print();
 
         env.execute("link Stream");
 

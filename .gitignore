@@ -32,3 +32,4 @@ hs_err_pid*
 target/classes/log4j2.properties
 target/generated-sources/
 /src/test/
+/src/main/resources/META-INF/

@@ -4,15 +4,15 @@ import java.util.Objects;
 
 public class SoaLog {
 
-    private String reqId;
-    private String rpcId;
-    private String appId;
-    private String service;
-    private String iFace;
-    private String method;
-    private String metric;
-    private String ipAddress;
-    private long logTime;
+    public String reqId;
+    public String rpcId;
+    public String appId;
+    public String service;
+    public String iFace;
+    public String method;
+    public String metric;
+    public String ipAddress;
+    public long logTime;
 
     /**
      * 标记对象是否可用
@@ -37,6 +37,9 @@ public class SoaLog {
         this.ipAddress = ipAddress;
         this.logTime = logTime;
         this.mark = Mark.USEFUL;
+    }
+
+    public SoaLog() {
     }
 
     public String getReqId() {
