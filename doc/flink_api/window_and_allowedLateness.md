@@ -121,9 +121,10 @@ val sessionCnts: DataStream[(Int, Int)] = vehicleCnts
 
 # AllowedLateness
 对延迟数据再提供一个宽容的时间
-
+> 水位线表明着早于它的事件不应该再出现,接收到水位线以前的的消息是不可避免的，这就是所谓的迟到事件
 
 
 
     http://wuchong.me/blog/2016/05/25/flink-internals-window-mechanism/
     http://zhuanlan.51cto.com/art/201810/584645.htm
+    http://www.whitewood.me/2018/06/01/Flink-Watermark-%E6%9C%BA%E5%88%B6%E6%B5%85%E6%9E%90/

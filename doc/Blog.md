@@ -22,3 +22,6 @@
     
 # Flink Watermark
     https://blog.csdn.net/xorxos/article/details/80715113    
+    
+# Flink 资源调度模型
+    http://www.whitewood.me/2018/06/17/FLIP6-%E8%B5%84%E6%BA%90%E8%B0%83%E5%BA%A6%E6%A8%A1%E5%9E%8B%E9%87%8D%E6%9E%84/
