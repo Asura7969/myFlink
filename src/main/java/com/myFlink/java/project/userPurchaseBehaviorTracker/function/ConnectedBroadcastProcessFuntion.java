@@ -38,7 +38,7 @@ public class ConnectedBroadcastProcessFuntion extends KeyedBroadcastProcessFunct
 
         EventType eventType = EventType.valueOf(value.getEventType());
         Config config = ctx.getBroadcastState(Launcher.configStateDescriptor).get(channel);
-        log.info("Read config: channel=" + channel + ", config=" + config);
+        log.info("Read config: channel = " + channel + ", config = " + config);
         if (Objects.isNull(config)) {
             config = defaultConfig;
         }

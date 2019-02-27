@@ -19,6 +19,7 @@ import org.apache.flink.streaming.api.CheckpointingMode;
 import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.datastream.BroadcastStream;
 import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.KeyedStream;
 import org.apache.flink.streaming.api.environment.CheckpointConfig;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -75,8 +76,10 @@ public class Launcher {
          * restart策略
          */
         env.setRestartStrategy(RestartStrategies.fixedDelayRestart(
-                10, // number of restart attempts
-                org.apache.flink.api.common.time.Time.of(30, TimeUnit.SECONDS) // delay
+                // number of restart attempts
+                10,
+                // delay
+                org.apache.flink.api.common.time.Time.of(30, TimeUnit.SECONDS)
         ));
 
         /* Kafka consumer */
@@ -85,7 +88,7 @@ public class Launcher {
         consumerProps.setProperty(GROUP_ID, params.get(GROUP_ID));
 
         // 事件流
-        final FlinkKafkaConsumer010 kafkaUserEventSource = new FlinkKafkaConsumer010<UserEvent>(
+        final FlinkKafkaConsumer010<UserEvent> kafkaUserEventSource = new FlinkKafkaConsumer010<>(
                 params.get(INPUT_EVENT_TOPIC),
                 new UserEventDeserializationSchema(),consumerProps);
 
@@ -93,11 +96,11 @@ public class Launcher {
         KeyedStream<UserEvent, String> customerUserEventStream = env
                 .addSource(kafkaUserEventSource)
                 .assignTimestampsAndWatermarks(new CustomWatermarkExtractor(Time.hours(24)))
-                .keyBy((KeySelector<UserEvent, String>) userEvent -> userEvent.getUserId());
+                .keyBy((KeySelector<UserEvent, String>) UserEvent::getUserId);
         //customerUserEventStream.print();
 
-        //配置流
-        final FlinkKafkaConsumer010 kafkaConfigEventSource = new FlinkKafkaConsumer010<Config>(
+        // 配置流
+        final FlinkKafkaConsumer010<Config> kafkaConfigEventSource = new FlinkKafkaConsumer010<>(
                 params.get(INPUT_CONFIG_TOPIC),
                 new ConfigDeserializationSchema(), consumerProps);
 
@@ -111,7 +114,7 @@ public class Launcher {
         producerProps.setProperty(BOOTSTRAP_SERVERS, params.get(BOOTSTRAP_SERVERS));
         producerProps.setProperty(RETRIES, "3");
 
-        final FlinkKafkaProducer010 kafkaProducer = new FlinkKafkaProducer010<EvaluatedResult>(
+        final FlinkKafkaProducer010<EvaluatedResult> kafkaProducer = new FlinkKafkaProducer010<>(
                 params.get(OUTPUT_TOPIC),
                 new EvaluatedResultSerializationSchema(),
                 producerProps);
