@@ -162,6 +162,11 @@
       <artifactId>flink-table_2.11</artifactId>
       <version>${flink.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.flink</groupId>
+      <artifactId>flink-cep-scala_2.11</artifactId>
+      <version>${flink.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>com.alibaba</groupId>
@@ -174,7 +179,6 @@
       <artifactId>flink-connector-redis_2.11</artifactId>
       <version>${flinkredis.version}</version>
     </dependency>
-
 
     <dependency>
       <groupId>org.apache.camel</groupId>
