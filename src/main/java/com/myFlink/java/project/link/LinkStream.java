@@ -60,8 +60,8 @@ public class LinkStream {
 
         // 一个TreeMap一条链路,有重复数据
         env.addSource(consumer)
-                .map((MapFunction<String, SoaLog>) log -> TransFormSoaLog.lookUp(log))
-                .filter(soa -> filterMsg(soa))
+                .map((MapFunction<String, SoaLog>) TransFormSoaLog::lookUp)
+                .filter(LinkStream::filterMsg)
                 .assignTimestampsAndWatermarks(new BoundedOutOfOrdernessTimestampExtractor<SoaLog>(Time.seconds(30)) {
                     @Override
                     public long extractTimestamp(SoaLog element) {
