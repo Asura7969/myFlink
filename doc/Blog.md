@@ -13,6 +13,7 @@
 
 # Github
     https://github.com/liguohua-bigdata/simple-flink
+    https://github.com/opensourceteams/fink-maven-scala-2
     
 # DataStream API详解
     https://www.jianshu.com/p/a3f43f861a42
@@ -25,3 +26,9 @@
     
 # Flink 资源调度模型
     http://www.whitewood.me/2018/06/17/FLIP6-%E8%B5%84%E6%BA%90%E8%B0%83%E5%BA%A6%E6%A8%A1%E5%9E%8B%E9%87%8D%E6%9E%84/
+    
+# Flink On Yarn
+    https://blog.csdn.net/aA518189/article/details/83583392    
+
+# 其它
+    https://blog.csdn.net/androidlushangderen/article/category/8553567    
