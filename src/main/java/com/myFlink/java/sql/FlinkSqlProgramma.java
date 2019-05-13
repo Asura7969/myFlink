@@ -14,6 +14,8 @@ import org.apache.flink.table.api.java.StreamTableEnvironment;
 import org.apache.flink.table.descriptors.*;
 import org.apache.flink.table.functions.FunctionContext;
 import org.apache.flink.table.functions.ScalarFunction;
+import org.apache.flink.table.functions.TableFunction;
+import org.apache.flink.types.Row;
 
 import java.util.Properties;
 
@@ -85,6 +87,50 @@ public class FlinkSqlProgramma {
 
     }
 
+    /**
+     *  http://zhuanlan.51cto.com/art/201811/586881.htm
+     *  参考: https://cloud.tencent.com/developer/article/1172926
+      * ScalarFunction:
+      *      A user-defined scalar functions maps zero, one, or multiple scalar values to a new scalar value.
+      *      实现 public ... eval(...)
+      *
+      * TableFunction:
+      *      (UDTF) A user-defined table functions works on zero, one, or multiple scalar values as input and
+      *      returns multiple rows as output.
+      * Example:
+      * {{{
+      *
+      *   public class Split extends TableFunction<String> {
+      *
+      *     // implement an "eval" method with as many parameters as you want
+      *     public void eval(String str) {
+      *       for (String s : str.split(" ")) {
+      *         collect(s);   // use collect(...) to emit an output row
+      *       }
+      *     }
+      *
+      *     // you can overload the eval method here ...
+      *   }
+      *
+      *   val tEnv: TableEnvironment = ...
+      *   val table: Table = ...    // schema: [a: String]
+      *
+      *   // for Scala users
+      *   val split = new Split()
+      *   table.join(split('c) as ('s)).select('a, 's)
+      *
+      *   // for Java users
+      *   tEnv.registerFunction("split", new Split())   // register table function first
+      *   table.join(new Table(tEnv, "split(a) as (s)")).select("a, s")
+      *
+      *   // for SQL users
+      *   tEnv.registerFunction("split", new Split())   // register table function first
+      *   tEnv.sqlQuery("SELECT a, s FROM MyTable, LATERAL TABLE(split(a)) as T(s)")
+      *
+      * }}}
+      * AggregateFunction:
+      *
+      */
     private static class DoubleToInt extends ScalarFunction{
         private int factor = 0;
         @Override
@@ -95,6 +141,44 @@ public class FlinkSqlProgramma {
 
         public double eval(int a) {
             return Double.valueOf(String.valueOf(a)) * factor;
+        }
+    }
+    public static class TimestampModifier extends ScalarFunction {
+        public long eval(long t) {
+            return t % 1000;
+        }
+        // 将long型的返回值在代码生成时翻译成
+        @Override
+        public TypeInformation<?> getResultType(Class<?>[] signature) {
+            return Types.SQL_TIMESTAMP;
+        }
+    }
+
+    private static class Split extends TableFunction<String> {
+        private String separator = " ";
+        public Split(String separator) {
+            this.separator = separator;
+        }
+        public void eval(String s) {
+            for (String v : s.split(separator)) {
+                collect(v);
+            }
+        }
+    }
+
+    public class CustomTypeSplit extends TableFunction<Row> {
+        public void eval(String str) {
+            for (String s : str.split(" ")) {
+                Row row = new Row(2);
+                row.setField(0, s);
+                row.setField(1, s.length());
+                collect(row);
+            }
+        }
+        // 定义复杂的返回类型
+        @Override
+        public TypeInformation<Row> getResultType() {
+            return Types.ROW(Types.STRING, Types.INT);
         }
     }
 }

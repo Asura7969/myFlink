@@ -1,6 +1,5 @@
 package com.myFlink.scala.cep
 
-import com.myFlink.java.cep.LoginWarning
 import com.myFlink.java.cep.login.{LoginEvent, LoginWarning}
 import org.apache.flink.cep.scala.CEP
 import org.apache.flink.cep.scala.pattern.Pattern

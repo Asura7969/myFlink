@@ -56,7 +56,7 @@ public class LinkStream {
         kafkaConf.setProperty("group.id", "flink-group");
 
         FlinkKafkaConsumer010<String> consumer =
-                new FlinkKafkaConsumer010<>("soa-info", new SimpleStringSchema(), kafkaConf);
+                new FlinkKafkaConsumer010<>("topicName", new SimpleStringSchema(), kafkaConf);
 
         // 一个TreeMap一条链路,有重复数据
         env.addSource(consumer)

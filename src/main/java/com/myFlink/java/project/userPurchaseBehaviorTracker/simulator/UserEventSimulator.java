@@ -35,16 +35,16 @@ public class UserEventSimulator {
 
 
         Properties props = new Properties();
-        props.put("bootstrap.servers", "slave03:9092");
+        props.put("bootstrap.servers", "127.0.0.1:9092");
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         KafkaProducer producer = new KafkaProducer<String, String>(props);
         ProducerRecord record;
-        for(int i=1;i<=100000;i++){
+        for(int i = 1; i <= 100000; i ++){
             //分析模版生成模拟数据
             //打印分析结果
             //System.out.println(userEventTplAnalyzer.analyse());
-            record = new ProducerRecord<String, String>(
+            record = new ProducerRecord<>(
                     "purchasePathAnalysisInPut",
                     null,
                     new Random().nextInt()+"",
@@ -56,7 +56,7 @@ public class UserEventSimulator {
             if(sleep%2==0&&sleep>800){
                 System.out.println("------------"+sleep+"----"+sleep%2);
                 //System.out.println(purchaseUserEventTplAnalyzer.analyse());
-                record = new ProducerRecord<String, String>(
+                record = new ProducerRecord<>(
                         "purchasePathAnalysisInPut",
                         null,
                         new Random().nextInt()+"",

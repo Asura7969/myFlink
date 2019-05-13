@@ -18,7 +18,7 @@ class ConfSource(confUrl: String) extends SourceFunction[ComputeConf]{
 
   override def run(sourceContext: SourceContext[ComputeConf]): Unit = {
     implicit val formats = DefaultFormats
-    while(true) {
+    while(isRunning) {
       Try { Http(confUrl).timeout(2000, 60000).asString }.toOption match {
         case Some(response) =>
           response.code match {

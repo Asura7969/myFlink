@@ -29,7 +29,7 @@ public class KafkaStream {
         props.setProperty("group.id", "flink-group");
 
         FlinkKafkaConsumer010<String> consumer =
-                new FlinkKafkaConsumer010<String>("topic001", new SimpleStringSchema(), props);
+                new FlinkKafkaConsumer010<>("topic001", new SimpleStringSchema(), props);
 
         // 增加时间水位设置类(指派时间戳，并生成WaterMark)
         consumer.assignTimestampsAndWatermarks(new AssignerWithPunctuatedWatermarks<String>() {
